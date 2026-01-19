@@ -5,3 +5,6 @@ __pycache__/
 .DS_Store
 .idea/
 __pycache__/
+
+# data file 
+ml/data/btc_minute_data.parquet
