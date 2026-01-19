@@ -5,7 +5,7 @@ from pydantic import ConfigDict
 
 class Settings(BaseSettings):
     DATABASE_HOST: str = Field(...)
-    DATABASE_PASSWORD: int = Field(...)
+    DATABASE_PASSWORD: str = Field(...)
     DATABASE_NAME: str = Field(...)
     DATABASE_USER: str = Field(...)
     DATABASE_PORT: int = Field(...)
