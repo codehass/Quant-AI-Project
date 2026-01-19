@@ -9,11 +9,9 @@ class Settings(BaseSettings):
     DATABASE_NAME: str = Field(...)
     DATABASE_USER: str = Field(...)
     DATABASE_PORT: int = Field(...)
-    HF_TOKEN: str = Field(...)
     SECRET_KEY: str = Field(...)
     ALGORITHM: str = Field(...)
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(...)
-    GEMINI_API_KEY: str = Field(...)
     FRONTEND_URL: str = Field(...)
 
     model_config = ConfigDict(env_file=".env", env_file_encoding="utf-8")

@@ -26,4 +26,4 @@ app.include_router(auth.router)
 
 @app.get("/", tags=["Home route"])
 def get_home():
-    return {"message": "Hello Smart logi track"}
+    return {"message": "Hello to Quant AI Project API"}
