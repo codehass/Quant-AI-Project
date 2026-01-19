@@ -56,6 +56,7 @@ def data_collection_api():
 
 df = data_collection_api()
 
-df.to_parquet("btc_minute_data.parquet", engine="pyarrow", index=False)
+df.to_parquet("../data/btc_minute_data.parquet", engine="pyarrow", coerce_timestamps='us',index=False)
 
 print("Fichier Parquet sauvegarde")
+
