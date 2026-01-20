@@ -53,7 +53,6 @@ def data_collection_api():
 
     return df
 
-
 df = data_collection_api()
 
 df.to_parquet("../data/btc_minute_data.parquet", engine="pyarrow", coerce_timestamps='us',index=False)
