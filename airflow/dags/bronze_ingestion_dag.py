@@ -1,6 +1,7 @@
 # bronze ingestion dag
 from airflow.decorators import dag
-from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
+# from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
+from spark_jobs.bronze_ingestion import run_bronze
 from datetime import datetime
 
 @dag(
@@ -9,13 +10,8 @@ from datetime import datetime
     schedule_interval='@daily',
     catchup=False
 )
+# run as a python operator
 def bronze_flow():
-    
-    ingest_task = SparkSubmitOperator(
-        task_id='ingest_bronze',
-        application='/opt/airflow/dags/scripts/bronze_ingestion.py',
-        conn_id='spark_default',
-        verbose=True
-    )
+    run_bronze()
 
 bronze_flow()
