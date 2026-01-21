@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+import os 
 
 SYMBOL = "BTCUSDT"
 INTERVAL = "1m"  # Intervalle d'une minute
@@ -55,7 +56,12 @@ def data_collection_api():
 
 df = data_collection_api()
 
-df.to_parquet("../data/btc_minute_data.parquet", engine="pyarrow", coerce_timestamps='us',index=False)
+# --- config path
+curr_dir=os.path.dirname(os.path.abspath(__file__))
+output_path="../../data/btc_minute_data.parquet"
+file_path=os.path.join(curr_dir, output_path)
 
+# --- save file
+df.to_parquet(file_path, engine="pyarrow", coerce_timestamps='us',index=False)
 print("Fichier Parquet sauvegarde")
 
