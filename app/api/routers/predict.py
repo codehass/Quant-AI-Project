@@ -23,3 +23,41 @@ async def predict_btc_price(
     db.commit()
     db.refresh(new_prediction)
     return {"predicted_close_t_plus_10": result}
+
+
+@router.get("/analytics/btc-predictions-summary")
+async def get_btc_prediction_analytics(db: Session = Depends(get_db)):
+    query = text(
+        """
+        SELECT 
+            AVG(predicted_close_t_plus_10) AS average_predicted_close,
+            MIN(predicted_close_t_plus_10) AS min_predicted_close,
+            MAX(predicted_close_t_plus_10) AS max_predicted_close,
+            COUNT(*) AS total_predictions
+        FROM btc_predictions;
+        """
+    )
+    result = db.execute(query).fetchone()
+    return {
+        "average_predicted_close": result.average_predicted_close,
+        "min_predicted_close": result.min_predicted_close,
+        "max_predicted_close": result.max_predicted_close,
+        "total_predictions": result.total_predictions,
+    }
+
+
+@router.get("/analytics/summary")
+def get_market_summary(db: Session = Depends(get_db)):
+    query = text(
+        """
+        SELECT 
+            COUNT(*) as total_records,
+            AVG(close) as avg_price,
+            MAX(high) as session_high,
+            MIN(low) as session_low,
+            SUM(volume) as total_volume
+        FROM silver_data
+    """
+    )
+    result = db.execute(query).mappings().first()
+    return result
