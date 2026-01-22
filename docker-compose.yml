@@ -83,13 +83,14 @@ services:
       - ALGORITHM=${ALGORITHM}
       - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
       - FRONTEND_URL=${FRONTEND_URL}
+    volumes:
+      - ./app:/code/app
+      - ./ml:/code/ml
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       postgres:
         condition: service_healthy
       airflow-init:
         condition: service_completed_successfully
-    volumes:
-      - ./app:/code/app
-      - ./ml:/code/ml
 volumes:
   postgres-db:
