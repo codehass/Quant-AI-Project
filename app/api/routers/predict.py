@@ -14,7 +14,9 @@ router = APIRouter(prefix="/api/v1/predict", tags=["BTC Prediction routes"])
 
 @router.post("/")
 async def predict_btc_price(
-    features: BTCFeaturesRequest, db: Session = Depends(get_db)
+    features: BTCFeaturesRequest,
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_user),
 ):
     predictor = BTCPredictor()
     result = predictor.predict(features)
@@ -26,7 +28,9 @@ async def predict_btc_price(
 
 
 @router.get("/analytics/btc-predictions-summary")
-async def get_btc_prediction_analytics(db: Session = Depends(get_db)):
+async def get_btc_prediction_analytics(
+    db: Session = Depends(get_db), current_user: UserSchema = Depends(get_current_user)
+):
     query = text(
         """
         SELECT 
@@ -47,7 +51,9 @@ async def get_btc_prediction_analytics(db: Session = Depends(get_db)):
 
 
 @router.get("/analytics/summary")
-def get_market_summary(db: Session = Depends(get_db)):
+def get_market_summary(
+    db: Session = Depends(get_db), current_user: UserSchema = Depends(get_current_user)
+):
     query = text(
         """
         SELECT 
