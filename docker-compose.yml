@@ -51,7 +51,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ${DATA_SOURCE_PATH}:/opt/airflow/data
-      - ./spark_jobs:/opt/airflow/spark_jobs
+      - ./airflow/spark_jobs:/opt/airflow/spark_jobs
       - ./requirements.txt:/requirements.txt
     command: >
       bash -c "
@@ -88,5 +88,8 @@ services:
         condition: service_healthy
       airflow-init:
         condition: service_completed_successfully
+    volumes:
+      - ./app:/code/app
+      - ./ml:/code/ml
 volumes:
   postgres-db:
