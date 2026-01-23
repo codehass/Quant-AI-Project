@@ -1,131 +1,123 @@
-<a name="readme-top"></a>
+# Quant-AI Project
 
-<div align="center">
-  <img src="public/logo-dark.png" alt="logo" width="140"  height="auto" />
+**Quant-AI** is a robust, data-driven system designed for real-time high-frequency price prediction of the BTC/USDT trading pair. It leverages a distributed infrastructure to ingest raw market data from Binance, process it using Apache Spark and Airflow, and generate actionable insights via Machine Learning models served through a FastAPI backend.
 
-  <br/>
-</div>
+## 🚀 Features
 
-# 📗 Table of Contents
+-   **Real-time Prediction**: High-frequency price forecasting for BTC/USDT.
+-   **REST API**: fast and asynchronous API built with **FastAPI**.
+-   **Data Pipeline**: Automated ETL workflows orchestrated by **Apache Airflow**.
+-   **Data Processing**: Scalable data processing with **Apache Spark**.
+-   **Containerization**: Fully containerized environment using **Docker** and **Docker Compose**.
+-   **Database**: Reliable data storage with **PostgreSQL**.
 
-- [📖 About the Project](#about-project)
-  - [🛠 Built With](#built-with)
-    - [Tech Stack](#tech-stack)
-    - [Key Features](#key-features)
-  - [🚀 Live Demo](#live-demo)
-- [💻 Getting Started](#getting-started)
-  - [Setup](#setup)
-  - [Install](#install)
-  - [Usage](#usage)
-  - [Login](#login)
-- [👥 Authors](#authors)
-- [🔭 Future Features](#future-features)
-- [🤝 Contributing](#contributing)
-- [⭐️ Show your support](#support)
-- [📝 License](#license)
+## 🛠 Tech Stack
 
-# 📖 Project title <a name="about-project"></a>
+-   **Language**: Python 3.10+
+-   **Backend**: FastAPI, Pydantic, SQLAlchemy
+-   **Orchestration**: Apache Airflow
+-   **Data Processing**: Apache Spark, Pandas, NumPy
+-   **Machine Learning**: Scikit-learn
+-   **Database**: PostgreSQL
+-   **Infrastructure**: Docker, Docker Compose
 
-Add a brief description of your project here
+## 📋 Prerequisites
 
-## 🛠 Built With <a name="built-with"></a>
+Ensure you have the following installed on your machine:
 
-### Tech Stack <a name="tech-stack"></a>
+-   [Docker](https://docs.docker.com/get-docker/)
+-   [Docker Compose](https://docs.docker.com/compose/install/)
 
-  <ul>
-    <li><a href="https://nextjs.org/">Next.js</a></li>
-    <li><a href="https://www.tailwindcss.com/">Tailwind CSS</a></li>
-    <li><a href="https://styled-components.com/">Styled-components</a></li>
-    <li><a href="https://supabase.com/">Supabase</a></li>
-  </ul>
+## ⚡ Getting Started
 
-### Key Features <a name="key-features"></a>
+Follow these steps to set up the project locally.
 
-- **Feature one**
-- **Feature two**
-- **Feature three**
-- **Feature four**
+### 1. Clone the Repository
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## 🚀 Live Demo <a name="live-demo"></a>
-
-- [Live Demo Link](link to deployed project)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## 💻 Getting Started <a name="getting-started"></a>
-
-To get a local copy up and running, follow these steps.
-
-### Setup
-
-Clone this repository to your desired folder:
-
-```sh
-  git clone git@github.com:codehass/front-end-next-template.git
+```bash
+git clone https://github.com/codehass/Quant-AI-Project.git
+cd Quant-AI-Project
 ```
 
-### Install
+### 2. Configure Environment Variables
 
-Install this project with:
+Create a `.env` file from the example template. This file contains database credentials and API configurations.
 
-```sh
-  cd front-end-next-template
-  npm install
+```bash
+cp .env.example .env
 ```
 
-create `.env` file and add your environment variables. You can copy `.env.example` as a template.
+> **Note**: You can leave the default values in `.env` for local development, or update them as needed (e.g., `DATABASE_PASSWORD`, `SECRET_KEY`).
 
-```sh
-  cp .env.example .env
+### 3. Build and Run Services
+
+Start the entire application stack using Docker Compose. This command builds the images and starts the containers in detached mode.
+
+```bash
+docker-compose up -d --build
 ```
 
-### Usage
+**Services started:**
+-   `postgres`: Database for application and Airflow.
+-   `airflow-init`: One-time initialization for Airflow (database & user).
+-   `airflow`: Airflow webserver and scheduler.
+-   `backend`: FastAPI application.
 
-To run the project, execute the following command:
+## 🖥 Usage
 
-```sh
-  npm run dev
+### Accessing the API
+
+Once the containers are running, the backend API is accessible at:
+
+-   **API Root**: `http://localhost:8000`
+-   **Interactive Docs (Swagger UI)**: `http://localhost:8000/docs`
+-   **Alternative Docs (ReDoc)**: `http://localhost:8000/redoc`
+
+### Accessing Airflow
+
+Manage and monitor your data pipelines via the Airflow web interface:
+
+-   **URL**: `http://localhost:8080`
+-   **Default Credentials**:
+    -   **Username**: `admin`
+    -   **Password**: `admin`
+
+*(These credentials are defined in `airflow/init_airflow.sh`)*
+
+### Database Access
+
+The PostgreSQL database is exposed on port `5433` (mapped from container port 5432) to avoid conflicts with local Postgres instances.
+
+-   **Host**: `localhost`
+-   **Port**: `5433`
+-   **User/Pass**: Defined in your `.env` file (default: `postgres_user_name` / `your_password`)
+-   **Database**: `quant_ai_db`
+
+## 📂 Project Structure
+
+```
+Quant-AI-Project/
+├── airflow/            # Airflow DAGs, config, and init scripts
+│   ├── dags/           # ETL and ML pipelines defined as DAGs
+│   └── Dockerfile      # Airflow image configuration
+├── app/                # FastAPI source code
+│   ├── api/            # Route handlers
+│   ├── db/             # Database connection and models
+│   ├── main.py         # Application entrypoint
+│   └── Dockerfile      # Backend image configuration
+├── data/               # Local volume for data storage
+├── ml/                 # Machine Learning resources
+│   ├── notebooks/      # Jupyter notebooks for exploration
+│   └── models/         # Trained model artifacts
+├── requirements.txt    # Python dependencies
+├── docker-compose.yml  # Docker services definition
+└── readme.md           # This documentation
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+## 🤝 Contributing
 
-## 👥 Author <a name="authors"></a>
+Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
 
-👤 **Hassan El Ouardy**
+## 📄 License
 
-- GitHub: [@codehass](https://github.com/codehass)
-- Twitter: [@hassanelourdy](https://twitter.com/hassanelourdy)
-- LinkedIn: [@hassanelourdy](https://www.linkedin.com/in/hassanelouardy/)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## 🔭 Future Features <a name="future-features"></a>
-
-- **Feature one**
-- **Feature two**
-- **Feature three**
-- **Feature four**
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## 🤝 Contributing <a name="contributing"></a>
-
-Contributions, issues, and feature requests are welcome!
-
-Feel free to check the [issues page](https://github.com/codehass/the-wild-oasis/issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## ⭐️ Show your support <a name="support"></a>
-
-Join us in supporting our project to improve cabin management in hotels! Your help makes a big difference in making stays smoother and guests happier. Let's work together to bring positive change to the hospitality industry!
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## 📝 License <a name="license"></a>
-
-This project is [MIT](./MIT.md) licensed.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+This project is licensed under the MIT License.

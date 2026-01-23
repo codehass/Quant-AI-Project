@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 from .db.database import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
-from .api.routers import auth
+from .api.routers import auth, predict
 from .config import settings
 
 app = FastAPI(
-    title="RetentionAI API",
-    description=("DEscription Project"),
+    title="Quant-AI API",
+    description=(
+        "This API provides access to real-time high-frequency price predictions for the BTC/USDT pair. The underlying system utilizes a distributed infrastructure to process raw Binance market data and transform it into actionable insights using Machine Learning."
+    ),
 )
 
 
@@ -22,6 +24,7 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 
 app.include_router(auth.router)
+app.include_router(predict.router)
 
 
 @app.get("/", tags=["Home route"])
