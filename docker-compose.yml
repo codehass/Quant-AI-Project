@@ -48,12 +48,14 @@ services:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}/${DATABASE_NAME}
       PYTHONPATH: "/opt/airflow:/opt/airflow/dags:/opt/airflow/spark_jobs"
+      bronze_path_env: /opt/airflow/data/bronze_layer
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ${DATA_SOURCE_PATH}:/opt/airflow/data
       - ./airflow/spark_jobs:/opt/airflow/spark_jobs
       - ./requirements.txt:/requirements.txt
+      - ./postgresql-42.6.0.jar:/opt/airflow/postgresql-42.6.0.jar
     command: >
       bash -c "
         pip install --no-cache-dir -r /requirements.txt &&
