@@ -1,36 +1,34 @@
-# silver processing dag
-# silver_processing_dag.py
-from airflow.decorators import dag, task  # <--- Added 'task'
-from airflow.sensors.external_task import ExternalTaskSensor
+from airflow import DAG
+from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
+import sys
+import os
+
+# FIXED: Import the logic from your script
 from spark_jobs.silver_processing import run_silver
 
-@dag(
-    dag_id='silver_processing_dag',
-    start_date=datetime(2026, 1, 21),
-    schedule_interval='@daily',
-    catchup=False
-)
-def silver_flow():
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
 
-    # The Sensor: Waits for Bronze DAG to finish
-    wait_for_bronze = ExternalTaskSensor(
-        task_id='wait_for_bronze',
-        external_dag_id='bronze_ingestion_dag', 
-        external_task_id=None,
-        check_existence=True,
-        timeout=600,
-        mode='reschedule'
+with DAG(
+    'silver_processing_dag',
+    default_args=default_args,
+    description='Reads Bronze, Transforms, and writes to Postgres',
+    schedule_interval='10,25,40,55 * * * *', # Runs 10 mins after Bronze (offset)
+    start_date=datetime(2024, 1, 1),
+    catchup=False,
+    tags=['silver', 'spark', 'postgres'],
+) as dag:
+
+    run_silver_task = PythonOperator(
+        task_id='process_silver_layer',
+        python_callable=run_silver
     )
 
-    # The Task Wrapper: Runs your Spark code
-    @task(task_id='run_silver_spark_job')
-    def execute_silver():
-        run_silver()
-
-    # The Dependency: Sensor >> Task
-    # We call the task function execute_silver() to create the task instance
-    wait_for_bronze >> execute_silver()
-
-# Instantiate the DAG
-silver_flow()
+    run_silver_task
