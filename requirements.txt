@@ -18,3 +18,4 @@ numpy
 pandas
 pydantic-settings
 pyarrow
+apache-airflow-providers-openlineage>=1.8.0

@@ -7,7 +7,9 @@ __pycache__/
 __pycache__/
 
 # data file 
-ml/data/btc_minute_data.parquet
-
+ml/data/
+ml/models/
+data/
 # airflow
 airflow/logs/
+models/
