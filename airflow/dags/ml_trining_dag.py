@@ -3,12 +3,12 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import os
 import sys
+from spark_jobs.ml_training import train_model  
 
 # Ensure Airflow can find your custom module
 sys.path.append("/opt/airflow")
-from spark_jobs.ml_training import train_model  
 
-# --- CONFIGURATION FOR DOCKER ---
+# --- CONFIG FOR DOCKER ---
 # These paths match the volumes in your docker-compose
 JDBC_JAR_PATH = os.getenv("JDBC_JAR_PATH_env")
 MODEL_OUTPUT_PATH = os.getenv("MODEL_OUTPUT_PATH_env")

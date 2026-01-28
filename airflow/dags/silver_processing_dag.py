@@ -3,8 +3,6 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import sys
 import os
-
-# FIXED: Import the logic from your script
 from spark_jobs.silver_processing import run_silver
 
 default_args = {

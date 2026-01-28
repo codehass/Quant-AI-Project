@@ -12,13 +12,8 @@ SYMBOL = "BTCUSDT"
 INTERVAL = "1m"
 LIMIT = 600
 
-# --- 1. DOWNLOAD FUNCTION (The "Ingestion")
+# --- DOWNLOAD FUNCTION (The "Ingestion")
 def download_binance_data():
-    """
-    Fetches data from Binance API and saves it as a Parquet file 
-    in the Bronze Layer folder defined in .env
-    """
-    # Use the env var if it exists, otherwise use the default Docker path
     bronze_path = os.getenv("bronze_path_env", "/opt/airflow/data/bronze_layer")
     
     # Ensure the directory exists
@@ -63,56 +58,39 @@ def download_binance_data():
     # --- FIX: Force Microsecond Precision for Spark Compatibility ---
     df["open_time"] = df["open_time"].astype("datetime64[us]")
     df["close_time"] = df["close_time"].astype("datetime64[us]")
-    # ---------------------------------------------------------------
-
+    
     # Save to Parquet (Overwrite existing file)
     df.to_parquet(file_path, engine="pyarrow", index=False)
 
-# --- 2. SPARK SESSION
+# --- SPARK SESSION
 def get_spark_session(app_name: str = "BinancePipeline") -> SparkSession:
     return SparkSession.builder \
         .appName(app_name) \
         .getOrCreate()
 
-# --- 3. READ FUNCTION (The "Verification")
+# --- READ FUNCTION (The "Verification")
 def load_raw_data() -> DataFrame:
     spark = get_spark_session()
     bronze_path = os.getenv("bronze_path_env", "/opt/airflow/data/bronze_layer")
     
     # Spark reads the whole folder or specific parquet file
     # We point it to the file we just downloaded
-    file_path = os.path.join(bronze_path, "btc_minute_data.parquet")
-    
+    file_path = os.path.join(bronze_path, "btc_minute_data.parquet")    
     df_bronze = spark.read.parquet(file_path)
     return df_bronze
 
+# --- VERIFY LOADING
 def verify_loading():
     print("Verifying data with Spark...")
     df_bronze = load_raw_data()
     df_bronze.show(5)
     return "Verification Complete"
 
+
 if __name__ == "__main__":
     # Test run: download then verify
     download_binance_data()
     verify_loading()
-#_____________________________________{}
-# from pyspark.sql import SparkSession
-# from dotenv import load_dotenv
-# import os 
 
-# load_dotenv()
-
-# def load_raw_data():
-#     spark = SparkSession.builder \
-#     .appName("BinancePipeline") \
-#     .getOrCreate()
-#     bronze_path=os.getenv("bronze_path_env") 
-#     df_bronze = spark.read.parquet(bronze_path)
-#     return df_bronze
-
-# def verify_loading():
-#     df_bronze=load_raw_data()
-#     return df_bronze.head(5)
 
     
