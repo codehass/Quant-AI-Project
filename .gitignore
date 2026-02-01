@@ -13,3 +13,6 @@ data/
 # airflow
 airflow/logs/
 models/
+
+# debugging files
+airflow/dags/debug_db_dag.pyc
