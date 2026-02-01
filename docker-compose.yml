@@ -48,12 +48,12 @@ services:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${DATABASE_USER}:${DATABASE_PASSWORD}@${DATABASE_HOST}/${DATABASE_NAME}
       PYTHONPATH: "/opt/airflow:/opt/airflow/dags:/opt/airflow/spark_jobs"
-      bronze_path_env: /opt/airflow/data/bronze_layer
+      # bronze_path_env: /opt/airflow/data/bronze_layer
       # -> from .env file:
-      JDBC_JAR_PATH_env: ${JDBC_JAR_PATH_env}
-      MODEL_OUTPUT_PATH_env: ${MODEL_OUTPUT_PATH_env}
-      DATABASE_HOST_int: ${DATABASE_HOST_int}
-      DATABASE_PORT_int: ${DATABASE_PORT_int}
+      # JDBC_JAR_PATH_env: ${JDBC_JAR_PATH_env}
+      # MODEL_OUTPUT_PATH_env: ${MODEL_OUTPUT_PATH_env}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
