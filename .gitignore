@@ -7,9 +7,11 @@ __pycache__/
 __pycache__/
 
 # data file 
+
 ml/data/
 ml/models/
 data/
+
 # airflow
 airflow/logs/
 models/
