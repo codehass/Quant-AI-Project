@@ -14,13 +14,13 @@ LIMIT = 600
 
 # --- DOWNLOAD FUNCTION (The "Ingestion")
 def download_binance_data():
-    bronze_path = os.getenv("bronze_path_env", "/opt/airflow/data/bronze_layer")
+    bronze_path ="/opt/airflow/data/bronze_layer"
     
     # Ensure the directory exists
     os.makedirs(bronze_path, exist_ok=True)
     
     # Define full file path
-    file_path = os.path.join(bronze_path, "btc_minute_data.parquet")
+    file_path = os.path.join(bronze_path,"btc_minute_data.parquet")
     print(f"Downloading data to: {file_path}")
 
     # Call Binance API
