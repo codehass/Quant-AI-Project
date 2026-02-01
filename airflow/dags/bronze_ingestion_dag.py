@@ -1,10 +1,10 @@
 from airflow import DAG
 from airflow.decorators import task
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator  # <--- NEW IMPORT
 from datetime import datetime, timedelta
 import sys
 import os
 
-# Add spark_jobs to path so we can import the functions
 sys.path.append(os.path.join(os.environ['AIRFLOW_HOME'], 'spark_jobs'))
 from spark_jobs.bronze_ingestion import download_binance_data, verify_loading
 
@@ -20,7 +20,7 @@ with DAG(
     'bronze_ingestion_dag',
     default_args=default_args,
     description='Downloads Binance data and verifies it with Spark',
-    schedule_interval=timedelta(minutes=15),
+    schedule_interval=timedelta(minutes=15), # <--- KEEPS RUNNING AUTOMATICALLY
     start_date=datetime(2024, 1, 1),
     catchup=False,
     tags=['bronze', 'ingestion'],
@@ -28,13 +28,19 @@ with DAG(
 
     @task
     def ingest_data():
-        # This calls the requests script to download data
         download_binance_data()
 
     @task
     def verify_data():
-        # This calls the spark script to check the file
         verify_loading()
 
-    # Define the flow: Download -> Verify
-    ingest_data() >> verify_data()
+    # --- NEW TRIGGER TASK ---
+    trigger_silver = TriggerDagRunOperator(
+        task_id='trigger_silver_layer',
+        trigger_dag_id='silver_processing_dag', # Must match Silver DAG ID exactly
+        wait_for_completion=False
+    )
+
+    # --- DEFINE FLOW ---
+    # After verify_data finishes, it triggers silver
+    ingest_data() >> verify_data() >> trigger_silver
